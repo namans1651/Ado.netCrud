@@ -1,0 +1,179 @@
+﻿@model WebApplication4.Models.CompanyModel
+
+@{
+    ViewBag.Title = "Create";
+}
+
+<h2>Create</h2>
+
+
+@using (Html.BeginForm("Create", "Home", FormMethod.Post, new { id = "companyForm" }))
+{
+    @Html.AntiForgeryToken()
+
+    <div class="form-horizontal">
+        <h4>CompanyModel</h4>
+        <hr />
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+        <div class="form-group">
+            @Html.LabelFor(model => model.Name, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.Name, new { htmlAttributes = new { @class = "form-control", id = "Name" } })
+                @Html.ValidationMessageFor(model => model.Name, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.Address, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.Address, new { htmlAttributes = new { @class = "form-control", id = "Address" } })
+                @Html.ValidationMessageFor(model => model.Address, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.PinCode, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.PinCode, new { htmlAttributes = new { @class = "form-control", id = "PinCode" } })
+                @Html.ValidationMessageFor(model => model.PinCode, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.State, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.State, new { htmlAttributes = new { @class = "form-control", id = "State" } })
+                @Html.ValidationMessageFor(model => model.State, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.City, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.City, new { htmlAttributes = new { @class = "form-control", id = "City" } })
+                @Html.ValidationMessageFor(model => model.City, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.ContactNumber, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.ContactNumber, new { htmlAttributes = new { @class = "form-control", id = "Contact" } })
+                @Html.ValidationMessageFor(model => model.ContactNumber, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                <input type="submit" value="Create" class="btn btn-default" id="btnSubmit" />
+            </div>
+        </div>
+    </div>
+}
+
+<div>
+    @Html.ActionLink("Back to List", "Index")
+</div>
+
+@*@if (ViewBag.CompanyData != null)
+    {
+        <div>
+            <h3>Serialized Company Data:</h3>
+            <pre>@ViewBag.CompanyData</pre>
+        </div>
+    }*@
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/jquery-validation@1.19.5/dist/jquery.validate.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/jquery-validation-unobtrusive@3.2.12/dist/jquery.validate.unobtrusive.min.js"></script>
+
+<script>
+ $(document).ready(function () {
+     $("#btnSubmit").click(function (event) {
+         event.preventDefault();
+         if (ValidateForm()) {
+             alert("Form is valid!");
+             $("#companyForm").off('submit').submit();
+            
+         } else {
+             alert("Validation failed. Please fix the errors.");
+         }
+     });
+         @*if (ValidateForm()) {
+            var formData = {
+                Name: $('#Name').val().trim(),
+                Address: $('#Address').val().trim(),
+                PinCode: $('#PinCode').val().trim(),
+                State: $('#State').val(),
+                City: $('#City').val().trim(),
+                ContactNumber: $('#Contact').val().trim()
+            };
+
+            var jsonData = JSON.stringify(formData);
+            $.ajax({
+                url: '@Url.Action("Create", "Home")',
+                type: 'POST',
+                contentType: 'application/json',
+                data: jsonData,
+                success: function () {
+                    alert("Company created successfully!");
+                },
+                //error: function (error) {
+                //    alert("Error:");
+                //}
+                error: function (error) {
+                    alert("Error: " + error.status + " - " + error.statusText);
+                    console.log(error);  // Log error to console for further debugging
+                }
+            });
+        }*@
+
+function ValidateForm() {
+    var errorMessages = [];
+
+    if ($('#Name').val().trim() === '') {
+        errorMessages.push('Please Enter Company Name');
+
+    }
+    if ($('#Address').val().trim() === '') {
+        errorMessages.push('Please Enter Company Address');
+
+    }
+    var pinCode = $('#PinCode').val().trim();
+    if (pinCode === '') {
+        errorMessages.push('Please Enter Pin Code');
+    } else if (isNaN(pinCode)) {
+        errorMessages.push('Pin Code must be a number');
+    }
+
+
+    if ($('#State').val() === "" || $('#State').val() === "Select state") {
+        errorMessages.push('Please Select a State');
+
+    }
+
+
+    if ($('#City').val().trim() === '') {
+        errorMessages.push('Please Enter City');
+
+    }
+
+
+    var contact = $('#Contact').val().trim();
+    if (contact === '') {
+        errorMessages.push('Please Enter Contact Number');
+    } else if (isNaN(contact)) {
+        errorMessages.push('Contact Number must be a valid number');
+    } else if (contact.length !== 10) {
+        errorMessages.push('Contact Number must be exactly 10 digits');
+    }
+
+    if (errorMessages.length > 0) {
+        alert("Validation Errors are as follows---:\n" + errorMessages.join("\n"));
+        return false;
+    }
+
+    return true;
+     }
+ });
+</script>

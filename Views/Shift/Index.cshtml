@@ -1,0 +1,65 @@
+﻿@model IEnumerable<WebApplication4.Models.ShiftModel>
+<html>
+<head>
+    <meta name="viewport" content="width-device-width" />
+
+
+    @{
+        ViewBag.Title = "Shift List";
+    }
+
+</head>
+
+
+<h2>Shift List</h2>
+@*<center>
+    @using (Html.BeginForm("Index", "Shift", FormMethod.Post, new { enctype = "multipart/form-data" }))
+    {
+        <input type="file" name="file" id="file" />
+    <input type="submit" value="Upload" />
+    }
+</center>*@
+
+<p>
+    @Html.ActionLink("Create New Shift", "Create")
+</p>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Shift Name</th>
+            <th>Start Time</th>
+            <th>End Time</th>
+            <th>Company</th>
+            <th>Image</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var shift in Model)
+        {
+            <tr>
+                <td>@shift.Name</td>
+                <td>@shift.start_time</td>
+                <td>@shift.end_time</td>
+                <td>@shift.companyName</td>
+                <td>
+                    @if (!string.IsNullOrEmpty(shift.imagepath))
+                    {
+                        <img src="@Url.Content(shift.imagepath)" alt="Shift Image" style="width: 100px; height: auto;" />
+                    }
+                    else
+                    {
+                        <span>No Image</span>
+                    }
+                </td>
+                <td>
+                    @Html.ActionLink("Edit", "Edit", new { id = shift.Id }) |
+                    @Html.ActionLink("Delete", "Delete", new { id = shift.Id })
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+</html>

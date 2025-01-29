@@ -1,0 +1,58 @@
+﻿
+@{
+    ViewBag.Title = "Index";
+}
+
+<h2>Index</h2>
+    <title> Index </title>
+        <div>
+            <label>Country Name:</label>
+            <input type="text" id="countryName" />
+        </div>
+        <div>
+            <label>Is Active:</label>
+            <input type="checkbox" id="isActive" />
+        </div>
+        <div>
+            <label>Is Delete:</label>
+            <input type="checkbox" id="isDelete" />
+        </div>
+        <div>
+            <button id="addCountryBtn">Add Country</button>
+        </div>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+<script>
+    //$(document).ready(function () {
+    //    console.log("jQuery is loaded and ready!");
+    //});
+   $(document).ready(function () {
+    $('#addCountryBtn').click(function () {
+        var countryName = $('#countryName').val();
+        var isActive = $('#isActive').is(':checked');
+        var isDeleted = $('#isDeleted').is(':checked');
+
+        $.ajax({
+            url: '@Url.Action("AddCountry", "Location")',
+            type: 'POST',
+            contentType: 'application/json; charset=utf-8',
+            data: JSON.stringify({
+                CountryName: countryName,
+                IsActive: isActive,
+                IsDeleted: isDeleted
+            }),
+            success: function (response) {
+                if (response) {
+                    alert("Country added successfully!");
+                } else {
+                    alert("Error: Could not add the country.");
+                }
+            },
+            error: function () {
+                alert("An unexpected error occurred.");
+            }
+        });
+    });
+});
+
+</script>
+

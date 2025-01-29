@@ -1,0 +1,263 @@
+﻿@model WebApplication4.Models.EmployeeModel
+
+@{
+    ViewBag.Title = "Create";
+}
+
+<h2>Create</h2>
+
+@using (Html.BeginForm("Create", "Employee", FormMethod.Post, new { @class = "form-horizontal" }))
+{
+    @Html.AntiForgeryToken()
+
+    <div class="form-horizontal">
+        <h4>EmployeeModel</h4>
+        <hr />
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
+
+        <!-- Name Field -->
+        <div class="form-group">
+            @Html.LabelFor(model => model.Name, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.Name, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.Name, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <!-- Mobile Number Field -->
+        <div class="form-group">
+            @Html.LabelFor(model => model.MobileNumber, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.MobileNumber, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.MobileNumber, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <!-- Email Field -->
+        <div class="form-group">
+            @Html.LabelFor(model => model.email, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.email, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.email, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.Address, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.Address, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.Address, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.ShiftName, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.DropDownListFor(model => model.fk_ShiftId, (SelectList)ViewBag.fk_ShiftId, "Select Shift", new { @class = "form-control", id = "shift" })
+                @Html.ValidationMessageFor(model => model.fk_ShiftId, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.CompanyName, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.DropDownListFor(model => model.fk_CompanyID, (SelectList)ViewBag.fk_CompanyID, "Select Company", new { @class = "form-control" })
+                @Html.ValidationMessageFor(model => model.fk_CompanyID, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.Country, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.DropDownListFor(model => model.FK_Country_Id, (SelectList)ViewBag.fk_CountryId, "Select Country", new { @class = "form-control", id = "country" })
+                @Html.ValidationMessageFor(model => model.FK_Country_Id, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.State, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.DropDownListFor(model => model.FK_State_Id, (SelectList)ViewBag.fk_StateId, "Select State", new { @class = "form-control", id = "state" })
+                @Html.ValidationMessageFor(model => model.FK_State_Id, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.City, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.DropDownListFor(model => model.FK_City_Id, (SelectList)ViewBag.fk_CityId, "Select City", new { @class = "form-control", id = "city" })
+                @Html.ValidationMessageFor(model => model.FK_City_Id, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+
+
+
+
+        @*<input type="hidden" id="ShiftEndReasonIds" name="FK_ShiftEndReasonId" />
+            <input type="hidden" id="ShiftEndTime" name="ShiftEndTime" />*@
+
+
+        <div class="modal" id="reasonModal" tabindex="-1" aria-labelledby="reasonModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <h5>Select Shift End Reason</h5>
+                    <ul id="reasonList">
+                    </ul>
+                    <input type="hidden" id="ShiftEndReasonIds" name="FK_ShiftEndReasonId" />
+                    <div class="form-group mt-3">
+                        <label for="ShiftEndTimeInput">Select Time</label>
+                        <input type="time" id="ShiftEndTime" name="ShiftEndTime" class="form-control" />
+                    </div>
+
+                    <button type="button" class="btn btn-primary" id="saveReasonBtn">Save Reason</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                <input type="submit" value="Create" class="btn btn-default" />
+            </div>
+        </div>
+    </div>
+
+
+}
+
+<h4>Upload Excel</h4>
+@using (Html.BeginForm("UploadExcel", "Employee", FormMethod.Post, new { enctype = "multipart/form-data" }))
+{
+    <div class="form-group">
+        <label for="fileUpload" class="control-label col-md-2">Upload Excel File:</label>
+        <div class="col-md-10">
+            <input type="file" name="fileUpload" id="fileUpload" class="form-control" />
+        </div>
+    </div>
+    <div class="form-group">
+        <div class="col-md-offset-2 col-md-10">
+            <input type="submit" value="Upload" class="btn btn-primary" />
+        </div>
+    </div>
+}
+
+<h4>Download Excel Format</h4>
+<form method="post" action="@Url.Action("DownloadTemplate", "Employee")">
+    <button type="submit" class="btn btn-success">Download Template</button>
+</form>
+
+
+
+
+<div>
+    @Html.ActionLink("Back to List", "Index")
+</div>
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    $('#country').change(function () {
+        var countryId = $(this).val();
+        if (countryId) {
+
+            $.ajax({
+                url: '@Url.Action("GetStates", "Employee")',
+                type: 'GET',
+                data: { countryId: countryId },
+                success: function (data) {
+                    var stateDropdown = $('#state');
+                    stateDropdown.empty();
+                    stateDropdown.append('<option value="">Select State</option>');
+
+                    $.each(data, function (index, state) {
+                        stateDropdown.append('<option value="' + state.StateId + '">' + state.StateName + '</option>');
+                    });
+                },
+                error: function () {
+                    alert("Failed to load states.");
+           5     }
+            });
+        } else {
+            $('#state').empty().append('<option value="">Select State</option>');
+            $('#city').empty().append('<option value="">Select City</option>');
+        }
+    });
+
+    $('#state').change(function () {
+        var stateId = $(this).val();
+        console.log("state id is " + stateId);
+        if (stateId) {
+
+            $.ajax({
+                url: '@Url.Action("GetCities", "Employee")',
+                type: 'GET',
+                data: { stateId: stateId },
+                success: function (data) {
+                    var cityDropdown = $('#city');
+                    cityDropdown.empty();
+                    cityDropdown.append('<option value="">Select City</option>');
+
+
+                    $.each(data, function (index, city) {
+                        cityDropdown.append('<option value="' + city.Id + '">' + city.Name + '</option>');
+                    });
+                },
+                error: function () {
+                    alert("Failed to load cities.");
+                }
+            });
+        } else {
+            $('#city').empty().append('<option value="">Select City</option>');
+        }
+    });
+
+    $('#shift').change(function () {
+    var shiftId = $(this).val();
+    if (shiftId == 1) {
+        $.ajax({
+            url: '@Url.Action("GetShiftEndReasons", "Employee")',
+            type: 'GET',
+            success: function (data) {
+                var reasonList = $('#reasonList');
+                reasonList.empty();
+
+                $.each(data, function (index, reason) {
+                    reasonList.append('<div class="form-check">' +
+                        '<input class="form-check-input reason-radio" type="radio" name="shiftEndReason" value="' + reason.FK_ShiftEndReasonId + '" id="reason' + reason.FK_ShiftEndReasonId + '">' +
+                        '<label class="form-check-label" for="reason' + reason.FK_ShiftEndReasonId + '">' + reason.Reason + '</label>' +
+                        '</div>');
+                });
+                $('#reasonModal').modal('show');
+            },
+            error: function () {
+                alert("Failed to load shift end reasons.");
+            }
+        });
+    }
+});
+
+$('body').on('click', '.reason-radio', function () {
+    var selectedReason = $(this).val();
+    console.log("Selected Reason ID: " + selectedReason);
+    $('#ShiftEndReasonIds').val(selectedReason);
+});
+    $('#saveReasonBtn').click(function () {
+       /* var selectedReason = $('#ShiftEndReasonIds').val(); */
+        var selectedTime = $('#ShiftEndTime').val();
+        if (selectedTime) {
+            console.log("selected time " + selectedTime);
+            $('#reasonModal').modal('hide');
+        } else {
+            alert("Please select a reason.");
+        }
+    });
+
+
+
+</script>

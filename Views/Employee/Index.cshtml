@@ -1,0 +1,261 @@
+﻿@model IPagedList<WebApplication4.Models.EmployeeModel>
+
+@{
+    ViewBag.Title = "Index";
+}
+
+@using PagedList.Mvc;
+@using System.Collections.Generic;
+@using PagedList
+
+
+
+<h2>Employee Page</h2>
+
+<!--<div align="right">-->
+@*<a href="/Employee/ExportToExcel"> Export To Excel </a>*@
+<!--<a href="/Employee/ExportToExcel">
+        <button>Download in Excel </button>
+    </a>
+</div>-->
+
+<div align="right">
+    <input type="button" class="btn btn-primary" id="downloadExcelBtn" value="Download in Excel">
+</div>
+
+@*<div class="modal fade" id="exportModal" tabindex="-1" aria-labelledby="exportModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exportModalLabel">Select Records to Export</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body" id="modalBody">
+                    <p>Loading records...</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" id="downloadSelected">Download Selected Records</button>
+                </div>
+            </div>
+        </div>
+    </div>*@
+
+
+<div class="modal fade" id="exportModal" tabindex="-1" aria-labelledby="exportModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <!-- Increased modal size -->
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exportModalLabel">Select Records to Export</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body" id="modalBody">
+                <div class="table-responsive">
+                    <table class="table table-bordered" id="exportTable">
+                        <thead>
+                            <tr>
+                                <th> select </th>
+                                <th>Name</th>
+                                <th>Mobile Number</th>
+                                <th>Email</th>
+                                <th>Address</th>
+                                <th>Company Name</th>
+                                <th>Shift Name</th>
+                                <th>Location</th>
+                                <th>Reason</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tableBody">
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" id="downloadSelected">Download Selected Records</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<p>
+    @Html.ActionLink("Create New", "Create")
+</p>
+<table class="table">
+    <tr>
+        <th>
+            @Html.DisplayNameFor(model => model.First().Name)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.First().MobileNumber)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.First().email)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.First().Address)
+        </th>
+        @*<th>
+                @Html.DisplayNameFor(model => model.fk_ShiftId)
+            </th>*@
+        <th>
+            Company Name
+        </th>
+        @*<th>
+                @Html.DisplayNameFor(model => model.fk_CompanyID)
+            </th>*@
+        <th>
+            ShiftName
+        </th>
+        <th>
+            Country
+        </th>
+        <th>
+            State
+        </th>
+        <th>
+            City
+        </th>
+        <th>
+            Reason
+        </th>
+    </tr>
+
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Name)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.MobileNumber)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.email)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Address)
+            </td>
+            @*<td>
+                    @Html.DisplayFor(modelItem => item.fk_ShiftId)
+                </td>*@
+            @*<td>
+                    @Html.DisplayFor(modelItem => item.fk_CompanyID)
+                </td>*@
+            <td>
+                @Html.DisplayFor(modelItem => item.CompanyName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.ShiftName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Country)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.State)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.City)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Reason)
+            </td>
+            @*<td>
+                    @Html.DisplayFor(modelItem => item.Country)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.State)
+                </td>*@
+            <td>
+                @Html.ActionLink("Edit", "Edit", new { id = item.Id }) |
+
+                @Html.ActionLink("Delete", "Delete", new { id = item.Id })
+            </td>
+        </tr>
+    }
+
+</table>
+
+@*@Html.PagedListPager(Model, i => Url.Action("Index", "Employee", new { i, search = Request.QueryString["Search"] }))*@
+
+@Html.PagedListPager(Model, page => Url.Action("Index", "Employee", new { page }))
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    $('#downloadExcelBtn').click(function () {
+        console.log('Download button clicked');
+    /*    $('#exportModal').modal('show');*/
+
+        $.ajax({
+            url: '/Employee/GetEmployeeDataForExport', 
+            type: 'GET',
+            success: function (data) {
+                console.log('AJAX Success', data);
+                var modalBody = $('#modalBody');
+                var tableBody = $('#tableBody'); 
+                tableBody.empty();
+               
+                $.each(data, function (index, item) {
+                  
+                    var row = $('<tr>');
+                    row.append('<td><input class="form-check-input" type="checkbox" value="' + item.Id + '" name="selectedRecords"></td>');
+                    row.append('<td>' + item.Name + '</td>');
+                    row.append('<td>' + item.MobileNumber + '</td>');
+                    row.append('<td>' + item.email + '</td>');
+                    row.append('<td>' + item.Address + '</td>');
+                    row.append('<td>' + item.CompanyName + '</td>');
+                    row.append('<td>' + item.ShiftName + '</td>');
+                    row.append('<td>' + item.Country + ', ' + item.State + ', ' + item.City + '</td>');
+                    row.append('<td>' + item.Reason + '</td>');
+
+                    tableBody.append(row);
+                });
+                
+
+               
+                $('#exportModal').modal('show');
+            },
+            error: function () {
+                alert("Failed to load employee data.");
+            }
+        });
+    });
+
+    $('#downloadSelected').click(function () {
+
+        var selectedRecords = [];
+        $('input[name="selectedRecords"]:checked').each(function () {
+            selectedRecords.push($(this).val());
+        });
+        if (selectedRecords.length > 0) {
+            console.log("Selected records:", selectedRecords);
+                $.ajax({
+                    url: '/Employee/ExportToExcel',
+                    type: 'POST',
+                    data: { selectedRecords: selectedRecords },
+                    xhrFields: {
+                        responseType: 'blob'
+                    },
+                    success: function (response) {
+
+                        var blob = new Blob([response], { type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"});
+                        var link = document.createElement("a");
+                        link.href = URL.createObjectURL(blob);
+                        link.download = "SelectedEmployeeList.xlsx";
+                        link.click();
+                    },
+                    error: function () {
+                        alert('Failed to download the records.');
+                    }
+                });
+
+                $('#exportModal').modal('hide');  // Close the modal after the download starts
+            } 
+        else {
+            alert('Please select at least one record.');
+        }
+    });
+
+</script>
+
